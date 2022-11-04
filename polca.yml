@@ -1,0 +1,48 @@
+name: polca
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=1_gnu
+  - boost=1.74.0=py39h5472131_3
+  - boost-cpp=1.74.0=h312852a_4
+  - bwa=0.7.17=h7132678_9
+  - bzip2=1.0.8=h7f98852_4
+  - ca-certificates=2022.9.24=ha878542_0
+  - grep=3.4=h9d02d08_1
+  - icu=68.2=h9c3ff4c_0
+  - ld_impl_linux-64=2.36.1=hea4e1c9_2
+  - libblas=3.9.0=12_linux64_openblas
+  - libcblas=3.9.0=12_linux64_openblas
+  - libffi=3.4.2=h9c3ff4c_4
+  - libgcc-ng=12.2.0=h65d4601_19
+  - libgfortran-ng=11.2.0=h69a702a_11
+  - libgfortran5=11.2.0=h5c6108e_11
+  - libgomp=12.2.0=h65d4601_19
+  - liblapack=3.9.0=12_linux64_openblas
+  - libopenblas=0.3.18=pthreads_h8fe5266_0
+  - libstdcxx-ng=11.2.0=he4da1e4_11
+  - libzlib=1.2.11=h36c2ea0_1013
+  - lz4-c=1.9.3=h9c3ff4c_1
+  - masurca=3.4.2=pl5262h86ccdc5_1
+  - ncurses=6.2=h58526e2_4
+  - numpy=1.21.3=py39hdbf815f_0
+  - openssl=3.0.5=h166bdaf_2
+  - pcre=8.45=h9c3ff4c_0
+  - perl=5.26.2=h36c2ea0_1008
+  - pip=21.3.1=pyhd8ed1ab_0
+  - python=3.9.7=hf930737_3_cpython
+  - python_abi=3.9=2_cp39
+  - readline=8.1=h46c0cb4_0
+  - seqkit=2.3.1=h9ee0642_0
+  - setuptools=58.2.0=py39hf3d152e_0
+  - sqlite=3.36.0=h9cd32fc_2
+  - tk=8.6.11=h27826a3_1
+  - tzdata=2021e=he74cb21_0
+  - wheel=0.37.0=pyhd8ed1ab_1
+  - xz=5.2.5=h516909a_1
+  - zlib=1.2.11=h36c2ea0_1013
+  - zstd=1.5.0=ha95c52a_0
+prefix: /pvol/conda_envs/polca
