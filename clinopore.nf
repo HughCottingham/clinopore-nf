@@ -140,7 +140,7 @@ process ASSEMBLE {
         script:
         """
         flye --nano-hq ${isolate_id}_filtered.fastq --out-dir flye_out --threads 16
-        reordering_contigs.py flye_out/assembly.fasta flye_out/${isolate_id}_inter.fasta flye_out/assembly_graph.gfa ${isolate_id}.gfa flye_out/assembly_info.txt flye_out/${isolate_id}_assembly_info.txt ${isolate_id}_flye.fasta
+        reordering_contigs.py flye_out/assembly.fasta flye_out/${isolate_id}_inter1.fasta flye_out/${isolate_id}_inter2.fasta flye_out/assembly_graph.gfa ${isolate_id}.gfa flye_out/assembly_info.txt flye_out/${isolate_id}_assembly_info.txt ${isolate_id}_flye.fasta
         mv flye_out/assembly.fasta flye_out/${isolate_id}_old.fasta
         mv flye_out/assembly_graph.gfa flye_out/${isolate_id}_old.gfa
         mv flye_out/assembly_info.txt flye_out/${isolate_id}_assembly_info_old.txt
