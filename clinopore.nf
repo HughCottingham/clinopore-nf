@@ -189,6 +189,7 @@ process POLYPOLISH {
         polypolish ${medaka_polished_assembly} ${isolate_id}_filtered_r1.sam ${isolate_id}_filtered_r2.sam| sed 's/_polypolish//' > ${isolate_id}_medaka_polypolish1.fasta
         contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_polypolish1.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish2.fasta
         seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish2.fasta > ${isolate_id}_medaka_polypolish.fasta
+        rm *sam
         """
 }
 
