@@ -160,8 +160,8 @@ process MEDAKA {
         script:
         """
         medaka_consensus -d ${assembly} -o . -i ${filtered_reads} -t 16 -m r941_min_sup_g507
-        mv consensus.fasta ${isolate_id}_medaka.fasta
-        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka.fasta
+        mv consensus.fasta ${isolate_id}_medaka_inter1.fasta
+        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_inter1.fasta ${isolate_id}_medaka_inter2.fasta ${isolate_id}_medaka.fasta
         """
 }
 
