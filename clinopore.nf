@@ -186,9 +186,9 @@ process POLYPOLISH {
         bwa mem -t 16 -a ${medaka_polished_assembly} ${illumina1} > ${isolate_id}_r1.sam
         bwa mem -t 16 -a ${medaka_polished_assembly} ${illumina2} > ${isolate_id}_r2.sam
         polypolish_insert_filter.py --in1 ${isolate_id}_r1.sam --in2 ${isolate_id}_r2.sam --out1 ${isolate_id}_filtered_r1.sam --out2 ${isolate_id}_filtered_r2.sam
-        polypolish ${medaka_polished_assembly} ${isolate_id}_filtered_r1.sam ${isolate_id}_filtered_r2.sam| sed 's/_polypolish//' > ${isolate_id}_medaka_polypolish.fasta
-        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_polypolish.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish.fasta
-        seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish.fasta > ${isolate_id}_medaka_polypolish.fasta
+        polypolish ${medaka_polished_assembly} ${isolate_id}_filtered_r1.sam ${isolate_id}_filtered_r2.sam| sed 's/_polypolish//' > ${isolate_id}_medaka_polypolish1.fasta
+        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_polypolish1.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish2.fasta
+        seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish2.fasta > ${isolate_id}_medaka_polypolish.fasta
         """
 }
 
