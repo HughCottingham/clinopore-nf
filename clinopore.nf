@@ -162,6 +162,8 @@ process MEDAKA {
         medaka_consensus -d ${assembly} -o . -i ${filtered_reads} -t 16 -m r941_min_sup_g507
         mv consensus.fasta ${isolate_id}_medaka_inter1.fasta
         contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_inter1.fasta ${isolate_id}_medaka_inter2.fasta ${isolate_id}_medaka.fasta
+        seqkit sort --by-length --reverse ${isolate_id}_medaka.fasta > ${isolate_id}_medaka.fasta
+
         """
 }
 
@@ -186,6 +188,7 @@ process POLYPOLISH {
         polypolish_insert_filter.py --in1 ${isolate_id}_r1.sam --in2 ${isolate_id}_r2.sam --out1 ${isolate_id}_filtered_r1.sam --out2 ${isolate_id}_filtered_r2.sam
         polypolish ${medaka_polished_assembly} ${isolate_id}_filtered_r1.sam ${isolate_id}_filtered_r2.sam| sed 's/_polypolish//' > ${isolate_id}_medaka_polypolish.fasta
         contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_polypolish.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish.fasta
+        seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish.fasta > ${isolate_id}_medaka_polypolish.fasta
         """
 }
 
