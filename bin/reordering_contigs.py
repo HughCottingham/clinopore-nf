@@ -78,7 +78,7 @@ with open(old_assembly_info,'r') as assembly_info_file,open(new_assembly_info,'w
 	new_assembly_info_file.write(assembly_info_string)
 	
 
-with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta,'r') as new_fasta_file,open(final_fasta,'w') as final_fasta_file:
+with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta2,'r') as new_fasta_file,open(final_fasta,'w') as final_fasta_file:
 	final_header_order = [header.replace('_new', '') for header in new_header_order]
 	#print(final_header_order)
 	new_assembly_info_table = csv.reader(new_assembly_info_file,delimiter='\t')
