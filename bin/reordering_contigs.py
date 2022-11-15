@@ -44,10 +44,10 @@ with open(new_fasta2,'r') as new_fasta_file2:
 			continue
 	#print(new_header_order)
 
-print('old_headers')
-print(old_sorted_header_order)
-print('new_headers')
-print(new_header_order)
+#print('old_headers')
+#print(old_sorted_header_order)
+#print('new_headers')
+#print(new_header_order)
 
 with open(old_gfa,'r') as old_gfa_file,open(new_gfa,'w') as new_gfa_file:
 	old_gfa_string=old_gfa_file.read()
@@ -93,20 +93,23 @@ with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta2,'r') 
 			circular = rows[3]
 		#print(name)
 		for i in range(len(final_header_order)):
-			if name in final_header_order[i]:
-				final_header_order[i]=">"+name+f" coverage={coverage} circular={circular}\n"
+			if name == final_header_order[i]:
+				final_header_order[i]=">"+name+f" depth={coverage} circular={circular}\n"
 			else:
 				continue
-	#print(final_header_order)
+	print(final_header_order)
 	for line in new_fasta_file:
 		if '>' not in line:
 			final_fasta_file.write(line)
 		else:
 			line=line.strip()
+			line=line+' '
 			for i in final_header_order:
 				#print(line)
 				#print(i)
 				if line in i:
+					print(line)
+					print(i)
 					final_fasta_file.write(i)
 
 
