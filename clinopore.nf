@@ -161,8 +161,8 @@ process MEDAKA {
         """
         medaka_consensus -d ${assembly} -o . -i ${filtered_reads} -t 16 -m r941_min_sup_g507
         mv consensus.fasta ${isolate_id}_medaka_inter1.fasta
-        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_inter1.fasta ${isolate_id}_medaka_inter2.fasta ${isolate_id}_medaka.fasta
-        seqkit sort --by-length --reverse ${isolate_id}_medaka.fasta > ${isolate_id}_medaka.fasta
+        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_inter1.fasta ${isolate_id}_medaka_inter2.fasta ${isolate_id}_medaka_inter3.fasta
+        seqkit sort --by-length --reverse ${isolate_id}_medaka_inter3.fasta > ${isolate_id}_medaka.fasta
 
         """
 }
