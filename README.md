@@ -12,6 +12,8 @@ It takes a set of long reads and optional short reads and runs the following too
 
 ## Quickstart
 
+Install nextflow (https://www.nextflow.io/docs/latest/getstarted.html)
+
 ```bash
 #Open up a screen session
 
@@ -56,6 +58,8 @@ There are several other options that can be set by modifying `nextflow.config`. 
 | `queue_size`                    | MASSIVE use only - Maximum number of jobs to submit at once                         | 1000                 |
 | `processors`           | Number of processors to use      | 4                |
 | `slurm_account`              | MASSIVE use only (MUST set if running on MASSIVE)   | 'slurm_account'                |
+| `medaka_model`              | Medaka model (see medaka github documentation for details)   | 'r941_min_sup_g507'                |
+
 
 ## Output
 
