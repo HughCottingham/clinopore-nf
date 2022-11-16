@@ -1,14 +1,14 @@
 # clinopore-nf
 
-An ONT-first assembly pipeline using the best combination of fully automated tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing. If completing the manual steps required for running trycycler is not feasible, this is the next best option in many cases. 
+An ONT-first assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
 
 It takes a set of long reads and optional short reads and runs the following tools:
 
-- filtlong (pre-assembly filtering)
-- flye (assembly)
-- medaka (long-read polishing)
-- polypolish (short-read polishing)
-- polca (short-read polishing)
+- filtlong (pre-assembly filtering) (https://github.com/rrwick/Filtlong)
+- flye (assembly) (https://github.com/fenderglass/Flye)
+- medaka (long-read polishing) (https://github.com/nanoporetech/medaka)
+- polypolish (short-read polishing) (https://github.com/rrwick/Polypolish)
+- polca (short-read polishing) (https://github.com/alekseyzimin/masurca)
 
 ## Quickstart
 
