@@ -1,6 +1,6 @@
 # clinopore-nf
 
-An ONT-first assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
+An ONT-first bacterial assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
 
 It takes a set of long reads and optional short reads and runs the following tools:
 
@@ -19,7 +19,7 @@ screen -R run_clinopore
 
 #Clone the clinopore repository:
 
-git clone https://github.com/HughCottingham/clinopore-nf.github&& cd clinopore-nf
+git clone https://github.com/HughCottingham/clinopore-nf.github && cd clinopore-nf
 
 #Install the conda environments (skip this step if running on MASSIVE):
 
@@ -27,7 +27,7 @@ conda create -f clinopore.yml
 conda create -f polca.nf
 conda env list # get the paths of installed envs - will need in run step
 
-#Set input parameters:
+#Set run parameters:
 
 nano nextflow.config
 
@@ -38,7 +38,7 @@ nextflow run clinopore.nf --clinopore_env /path/to/clinopore/conda/env --polca_e
 
 ## Usage
 
-The most important part of running the pipeline is ensuring your read data is in the correct format and has its path set as an input parameter. All reads (short and long) should be in the same specified directory (`reads/*fastq.gz` by default). This can be set by editing `nextflow.config`. Long reads should be in the format `{isolate_id}.fastq.gz` while short reads should be in the format `{isolate_id}_1.fastq.gz`/`{isolate_id}_2.fastq.gz`.
+The most important part of running the pipeline is ensuring your read data is in the correct format and has its path set as an input parameter. All reads (short and long) should be specified in the `nextflow.config` file (`reads/*fastq.gz` by default). Long reads should be in the format `{isolate_id}.fastq.gz` while short reads should be in the format `{isolate_id}_1.fastq.gz`/`{isolate_id}_2.fastq.gz`.
 
 There are several other options that can be set by modifying `nextflow.config`. Below is a summary of these options.
 
