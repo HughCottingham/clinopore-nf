@@ -1,4 +1,4 @@
-name: /scratch/cn64/hugh/conda_envs/polca
+name: polca
 channels:
   - conda-forge
   - bioconda
