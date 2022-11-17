@@ -12,8 +12,6 @@ It takes a set of long reads and optional short reads and runs the following too
 
 ## Quickstart
 
-Install nextflow (https://www.nextflow.io/docs/latest/getstarted.html)
-
 ```bash
 #Open up a screen session
 
@@ -34,6 +32,7 @@ nano nextflow.config
 
 #Run the pipeline
 
+conda activate /path/to/clinopore/conda/env
 nextflow run clinopore.nf --clinopore_env /path/to/clinopore/conda/env --polca_env /path/to/polca/conda/env
 ```
 
@@ -65,6 +64,10 @@ There are several other options that can be set by modifying `nextflow.config`. 
 If all steps of the pipeline are run, the final assembly files will be in the base of the output directory named `{isolate_id}_medaka_polypolish_polca.fasta`. If you don't run every step or are interested in the intermediates, the intermediate fasta files are in the directories `{output_dir}/flye`, `{output_dir}/medaka` and `{output_dir}/polypolish`. The assembly graph files produced by flye are also provided in the `{output_dir}/gfa` directory to allow for visualisation in a tool like Bandage. 
 
 Contigs are sorted from largest to smallest, meaning the chromosome will typically be `contig_1`, the largest plasmid will be `contig_2` and so on. Fasta headers also include contig length in bases, depth and whether it is circular or not. 
+
+## Errors
+
+I have had a little bit of trouble with nextflow version 22.10.2 interacting with conda, so if you have installed your environments, set them as an input parameter and are still getting a 'filtlong:command not found' error from nextflow, **try using nextflow v21.10.6**. To do this, remove your existing nextflow executable and download this file https://github.com/nextflow-io/nextflow/releases/download/v21.10.6/nextflow, run `chmod +x nextflow` and move it to your PATH. 
 
 ## References
 

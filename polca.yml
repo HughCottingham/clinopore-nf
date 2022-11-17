@@ -5,6 +5,7 @@ channels:
   - defaults
   - r
 dependencies:
+  - nextflow=21.10.6
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
   - alsa-lib=1.2.8=h166bdaf_0
@@ -69,7 +70,7 @@ dependencies:
   - masurca=4.0.9=pl5321h6e1a2d6_1
   - minimap2=2.24=h7132678_1
   - ncurses=6.3=h27087fc_1
-  - nextflow=22.10.1=h4a94de4_0
+  - nextflow=21.10.6
   - openjdk=17.0.3=hafdced1_4
   - openssl=3.0.7=h166bdaf_0
   - pcre=8.45=h9c3ff4c_0
