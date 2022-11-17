@@ -25,8 +25,8 @@ git clone https://github.com/HughCottingham/clinopore-nf.github && cd clinopore-
 
 #Install the conda environments (skip this step if running on MASSIVE):
 
-conda create -f clinopore.yml -p /path/to/clinopore/conda/env
-conda create -f polca.yml -p /path/to/polca/conda/env
+conda env create -f clinopore.yml -p /path/to/clinopore/conda/env
+conda env create -f polca.yml -p /path/to/polca/conda/env
 
 #Set run parameters:
 

@@ -109,4 +109,3 @@ dependencies:
   - pip:
     - biopython==1.79
     - numpy==1.23.4
-prefix: /scratch/cn64/hugh/conda_envs/polca
