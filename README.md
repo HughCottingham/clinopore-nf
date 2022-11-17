@@ -65,9 +65,6 @@ If all steps of the pipeline are run, the final assembly files will be in the ba
 
 Contigs are sorted from largest to smallest, meaning the chromosome will typically be `contig_1`, the largest plasmid will be `contig_2` and so on. Fasta headers also include contig length in bases, depth and whether it is circular or not. 
 
-## Errors
-
-I have had a little bit of trouble with nextflow version 22.10.2 interacting with conda, so if you have installed your environments, set them as an input parameter and are still getting a 'filtlong:command not found' error from nextflow, **try using nextflow v21.10.6**. To do this, remove your existing nextflow executable and download this file https://github.com/nextflow-io/nextflow/releases/download/v21.10.6/nextflow, run `chmod +x nextflow` and move it to your PATH. 
 
 ## References
 
