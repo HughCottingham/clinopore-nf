@@ -19,7 +19,7 @@ screen -R run_clinopore
 
 #Clone the clinopore repository:
 
-git clone https://github.com/HughCottingham/clinopore-nf.github && cd clinopore-nf
+git clone https://github.com/HughCottingham/clinopore-nf.git && cd clinopore-nf
 
 #Install the conda environments (skip this step if running on MASSIVE):
 
