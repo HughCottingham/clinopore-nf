@@ -1,6 +1,6 @@
 # clinopore-nf
 
-An ONT-first bacterial assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
+An ONT-first bacterial isolate assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
 
 It takes a set of long reads and optional short reads and runs the following tools:
 
