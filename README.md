@@ -44,7 +44,7 @@ There are several other options that can be set by modifying `nextflow.config`. 
 
 | Option                            | Description                                                       | Default           |
 | ----                              | ----                                                              | ----              |
-| `reads`                | Glob pattern matching input reads               | 200               | 'reads/*fastq.gz'
+| `reads`                | Glob pattern matching input reads             | 'reads/*fastq.gz'
 | `outdir`                        | Output directory                                                   | 'assemblies'   |
 | `run_filtlong`                   | Optional read filtering step ('true' or 'false')     | 'true'                 |
 | `run_medaka`               | Optional long-read polishing step ('true' or 'false')     | 'true'                |
