@@ -57,6 +57,7 @@ There are several other options that can be set by modifying `nextflow.config`. 
 | `processors`           | Number of processors to use      | 4                |
 | `slurm_account`              | MASSIVE use only (MUST set if running on MASSIVE)   | 'slurm_account'                |
 | `medaka_model`              | Medaka model (see medaka github documentation for details)   | 'r941_min_sup_g507'                |
+| `failure_action`              | Determine whether pipeline should terminate or ignore failed processes ('terminate' or 'ignore')   | 'terminate'                |
 
 
 ## Output
