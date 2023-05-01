@@ -180,7 +180,7 @@ process POLYPOLISH {
         input:
         //tuple from medaka polished
         //tuple pe reads
-        tuple val(isolate_id), path(medaka_polished_assembly), path(illumina1), path(illumina2)
+        tuple val(isolate_id), path(medaka_polished_assembly), path(illumina1), path(illumina2), path(flye_assembly), path(gfa_file)
         output:
         tuple val(isolate_id), path("${isolate_id}_medaka_polypolish.fasta")
 
@@ -191,7 +191,7 @@ process POLYPOLISH {
         bwa mem -t 16 -a ${medaka_polished_assembly} ${illumina2} > ${isolate_id}_r2.sam
         polypolish_insert_filter.py --in1 ${isolate_id}_r1.sam --in2 ${isolate_id}_r2.sam --out1 ${isolate_id}_filtered_r1.sam --out2 ${isolate_id}_filtered_r2.sam
         polypolish ${medaka_polished_assembly} ${isolate_id}_filtered_r1.sam ${isolate_id}_filtered_r2.sam| sed 's/_polypolish//' > ${isolate_id}_medaka_polypolish1.fasta
-        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_polypolish1.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish2.fasta
+        contig_renaming.py ${flye_assembly} ${isolate_id}_medaka_polypolish1.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish2.fasta
         seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish2.fasta > ${isolate_id}_medaka_polypolish.fasta
         rm *sam
         """
@@ -204,7 +204,7 @@ process POLCA {
 
 
         input:
-        tuple val(isolate_id), path(polypolish_polished_assembly), path(illumina1), path(illumina2)
+        tuple val(isolate_id), path(polypolish_polished_assembly), path(illumina1), path(illumina2), path(flye_assembly), path(gfa_file)
         output:
         tuple val(isolate_id), path("${isolate_id}_medaka_polypolish_polca.fasta")
 
@@ -213,7 +213,7 @@ process POLCA {
         polca.sh -a ${polypolish_polished_assembly} -r '${illumina1} ${illumina2}' -t 16 -m 4G
         mv ${isolate_id}_medaka_polypolish.fasta.PolcaCorrected.fa ${isolate_id}_medaka_polypolish_polca_intermediate.fasta
         seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish_polca_intermediate.fasta > ${isolate_id}_medaka_polypolish_polca.fasta
-        contig_renaming.py ../../../${params.outdir}/flye/${isolate_id}_flye.fasta ${isolate_id}_medaka_polypolish_polca.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish_polca.fasta
+        contig_renaming.py ${flye_assembly} ${isolate_id}_medaka_polypolish_polca.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish_polca.fasta
 
         """
 }
@@ -237,13 +237,17 @@ workflow {
   if ( run_polypolish ) {
     medaka_illumina_ch=medaka_polished_ch
     .combine(reads_pe, by: 0)
+    medaka_illumina_assembled_ch=medaka_illumina_ch
+    .combine(assembled_ch, by:0)
     .view()
-    polypolished_ch=POLYPOLISH(medaka_illumina_ch)
+    polypolished_ch=POLYPOLISH(medaka_illumina_assembled_ch)
   }
   if ( run_polca ) {
     polypolish_illumina_ch=polypolished_ch
     .combine(reads_pe,by:0)
+    polypolish_illumina_assembled_ch=polypolish_illumina_ch
+    .combine(assembled_ch, by:0)
     .view()
-    polca_polished_ch=POLCA(polypolish_illumina_ch)
+    polca_polished_ch=POLCA(polypolish_illumina_assembled_ch)
   }
 }
