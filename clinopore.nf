@@ -114,7 +114,6 @@ run_polca = check_boolean_option(params.run_polca, 'run_polca')
 
 
 process FILTER {
-        errorStrategy "${params.failure_action}"
         conda "${params.clinopore_env}"
         input:
         tuple val(isolate_id), path(reads_se)
@@ -129,7 +128,6 @@ process FILTER {
 }
 
 process ASSEMBLE {
-        errorStrategy "${params.failure_action}"
         conda "${params.clinopore_env}"
         publishDir path:("${params.outdir}/flye"), mode: 'copy', saveAs: {filename -> "${isolate_id}_flye.fasta"}, pattern: '*fasta'
         publishDir path:("${params.outdir}/gfa"), mode: 'copy', saveAs: {filename -> "${isolate_id}.gfa"}, pattern: '*gfa'
@@ -150,7 +148,6 @@ process ASSEMBLE {
 }
 
 process MEDAKA {
-        errorStrategy "${params.failure_action}"
         conda "${params.clinopore_env}"
         publishDir path:("${params.outdir}/medaka"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka.fasta"}, pattern: '*fasta'
 
@@ -173,7 +170,6 @@ process MEDAKA {
 
 
 process POLYPOLISH {
-        errorStrategy "${params.failure_action}"
         conda "${params.clinopore_env}"
         publishDir path:("${params.outdir}/polypolish"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka_polypolish.fasta"}, pattern: '*polypolish.fasta'        
 
@@ -198,7 +194,6 @@ process POLYPOLISH {
 }
 
 process POLCA {
-        errorStrategy "${params.failure_action}"
         conda "${params.polca_env}"
         publishDir path:("${params.outdir}"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka_polypolish_polca.fasta"}, pattern: '*polca.fasta'        
 
