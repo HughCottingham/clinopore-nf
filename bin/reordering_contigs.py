@@ -3,6 +3,7 @@ import sys
 import subprocess
 import re
 import csv
+import Bio
 
 old_fasta = sys.argv[1]
 new_fasta1 = sys.argv[2]
@@ -11,7 +12,8 @@ old_gfa = sys.argv[4]
 new_gfa = sys.argv[5]
 old_assembly_info = sys.argv[6]
 new_assembly_info = sys.argv[7]
-final_fasta = sys.argv[8]
+penultimate_fasta = sys.argv[8]
+final_fasta = sys.argv[9]
 
 with open(old_fasta,'r') as old_fasta_file,open(new_fasta1,'w') as new_fasta_file1:
 	#print(old_sorted_header_order)
@@ -78,7 +80,7 @@ with open(old_assembly_info,'r') as assembly_info_file,open(new_assembly_info,'w
 	new_assembly_info_file.write(assembly_info_string)
 	
 
-with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta2,'r') as new_fasta_file,open(final_fasta,'w') as final_fasta_file:
+with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta2,'r') as new_fasta_file,open(penultimate_fasta,'w') as penultimate_fasta_file:
 	final_header_order = [header.replace('_new', '') for header in new_header_order]
 	#print(final_header_order)
 	new_assembly_info_table = csv.reader(new_assembly_info_file,delimiter='\t')
@@ -100,7 +102,7 @@ with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta2,'r') 
 	print(final_header_order)
 	for line in new_fasta_file:
 		if '>' not in line:
-			final_fasta_file.write(line)
+			penultimate_fasta_file.write(line)
 		else:
 			line=line.strip()
 			line=line+' '
@@ -110,7 +112,15 @@ with open(new_assembly_info,'r') as new_assembly_info_file,open(new_fasta2,'r') 
 				if line in i:
 					print(line)
 					print(i)
-					final_fasta_file.write(i)
+					penultimate_fasta_file.write(i)
+
+with open(penultimate_fasta,'r') as penultimate_fasta_file,open(final_fasta,'w') as final:
+	from Bio import SeqIO
+	for record in SeqIO.parse(penultimate_fasta_file, "fasta"):
+		header=str(record.description)
+		seq=str(record.seq)
+		length=str(len(record.seq))
+		final.write(">"+header+" length="+length+'\n'+seq+'\n')
 
 
 

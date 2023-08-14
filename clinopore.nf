@@ -4,8 +4,37 @@ log.info """\
          CLINOPORE
          ===================================
          reads        : ${params.reads}
+
          """
          .stripIndent()
+
+
+// Assembly processes
+
+include { FILTER } from './src/processes/assemble.nf'
+include { ASSEMBLE } from './src/processes/assemble.nf'
+include { MEDAKA } from './src/processes/assemble.nf'
+include { POLYPOLISH } from './src/processes/assemble.nf'
+include { POLCA } from './src/processes/assemble.nf'
+
+// Assembly stats processes
+
+include { POLISHING_STATS } from './src/processes/assembly_stats.nf'
+include { POLCA_POLISHING_STATS } from './src/processes/assembly_stats.nf'
+include { COMBINE_POLISHING_STATS } from './src/processes/assembly_stats.nf'
+include { COMBINE_POLCA_POLISHING_STATS } from './src/processes/assembly_stats.nf'
+include { COMBINE_ALL_POLISHING_STATS } from './src/processes/assembly_stats.nf'
+include { ASSEMBLY_STATS } from './src/processes/assembly_stats.nf'
+include { COMBINE_ASSEMBLY_STATS } from './src/processes/assembly_stats.nf'
+
+// Read stats processes
+
+include { RAW_ONT_STATS } from './src/processes/read_stats.nf'
+include { COMBINE_RAW_ONT_STATS } from './src/processes/read_stats.nf'
+include { FILTERED_ONT_STATS } from './src/processes/read_stats.nf'
+include { COMBINE_FILTERED_ONT_STATS } from './src/processes/read_stats.nf'
+include { ILLUMINA_STATS } from './src/processes/read_stats.nf'
+include { COMBINE_ILLUMINA_STATS } from './src/processes/read_stats.nf'
 
 
 def check_arguments(params) {
@@ -92,6 +121,7 @@ def check_host(workflow) {
 
 // For an optional stage param variable, check that it is either a Boolean or String
 // If it is a string and either 'true' or 'false', return the boolean equivalent
+
 def check_boolean_option(option, name) {
   if (option.getClass() == java.lang.Boolean) {
     return option
@@ -105,144 +135,184 @@ def check_boolean_option(option, name) {
   exit 1, "ERROR: ${name} option must be true or false"
 }
 
-//run_rasusa = check_boolean_option(params.run_rasusa, 'run_rasusa')
-run_filtlong = check_boolean_option(params.run_filtlong, 'run_filtlong')
-run_medaka = check_boolean_option(params.run_medaka, 'run_medaka')
-run_polypolish = check_boolean_option(params.run_polypolish, 'run_polypolish')
-run_polca = check_boolean_option(params.run_polca, 'run_polca')
+filter_reads = check_boolean_option(params.filter_reads, 'filter_reads')
+long_read_polish = check_boolean_option(params.long_read_polish, 'long_read_polish')
+short_read_polish = check_boolean_option(params.short_read_polish, 'short_read_polish')
+read_qc = check_boolean_option(params.read_qc, 'read_qc')
+polishing_stats = check_boolean_option(params.polishing_stats, 'polishing_stats')
 
 
-
-process FILTER {
-        conda "${params.clinopore_env}"
-        input:
-        tuple val(isolate_id), path(reads_se)
-
-        output:
-        tuple val(isolate_id), path("${isolate_id}_filtered.fastq")
-
-        script:
-        """
-        filtlong --min_length 1000 --keep_percent 95 $reads_se > ${isolate_id}_filtered.fastq
-        """
-}
-
-process ASSEMBLE {
-        conda "${params.clinopore_env}"
-        publishDir path:("${params.outdir}/flye"), mode: 'copy', saveAs: {filename -> "${isolate_id}_flye.fasta"}, pattern: '*fasta'
-        publishDir path:("${params.outdir}/gfa"), mode: 'copy', saveAs: {filename -> "${isolate_id}.gfa"}, pattern: '*gfa'
-        input:
-        tuple val(isolate_id), path(filtered_ch)
-
-        output:
-        tuple val(isolate_id), path("${isolate_id}_flye.fasta"), path("${isolate_id}.gfa")
-        
-        script:
-        """
-        flye --nano-hq ${isolate_id}_filtered.fastq --out-dir flye_out --threads 16
-        reordering_contigs.py flye_out/assembly.fasta flye_out/${isolate_id}_inter1.fasta flye_out/${isolate_id}_inter2.fasta flye_out/assembly_graph.gfa ${isolate_id}.gfa flye_out/assembly_info.txt flye_out/${isolate_id}_assembly_info.txt ${isolate_id}_flye.fasta
-        mv flye_out/assembly.fasta flye_out/${isolate_id}_old.fasta
-        mv flye_out/assembly_graph.gfa flye_out/${isolate_id}_old.gfa
-        mv flye_out/assembly_info.txt flye_out/${isolate_id}_assembly_info_old.txt
-        """
-}
-
-process MEDAKA {
-        conda "${params.clinopore_env}"
-        publishDir path:("${params.outdir}/medaka"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka.fasta"}, pattern: '*fasta'
-
-        input:
-        tuple val(isolate_id), path(assembly), path(gfa_file), path(filtered_reads)
-
-        output:
-        tuple val(isolate_id), path("${isolate_id}_medaka.fasta")
-
-        script:
-        """
-        medaka_consensus -d ${assembly} -o . -i ${filtered_reads} -t 16 -m ${params.medaka_model}
-        mv consensus.fasta ${isolate_id}_medaka_inter1.fasta
-        contig_renaming.py ${assembly} ${isolate_id}_medaka_inter1.fasta ${isolate_id}_medaka_inter2.fasta ${isolate_id}_medaka_inter3.fasta
-        seqkit sort --by-length --reverse ${isolate_id}_medaka_inter3.fasta > ${isolate_id}_medaka.fasta
-
-        """
-}
-
-
-
-process POLYPOLISH {
-        conda "${params.clinopore_env}"
-        publishDir path:("${params.outdir}/polypolish"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka_polypolish.fasta"}, pattern: '*polypolish.fasta'        
-
-        input:
-        //tuple from medaka polished
-        //tuple pe reads
-        tuple val(isolate_id), path(medaka_polished_assembly), path(illumina1), path(illumina2), path(flye_assembly), path(gfa_file)
-        output:
-        tuple val(isolate_id), path("${isolate_id}_medaka_polypolish.fasta")
-
-        script:
-        """
-        bwa index ${medaka_polished_assembly}
-        bwa mem -t 16 -a ${medaka_polished_assembly} ${illumina1} > ${isolate_id}_r1.sam
-        bwa mem -t 16 -a ${medaka_polished_assembly} ${illumina2} > ${isolate_id}_r2.sam
-        polypolish_insert_filter.py --in1 ${isolate_id}_r1.sam --in2 ${isolate_id}_r2.sam --out1 ${isolate_id}_filtered_r1.sam --out2 ${isolate_id}_filtered_r2.sam
-        polypolish ${medaka_polished_assembly} ${isolate_id}_filtered_r1.sam ${isolate_id}_filtered_r2.sam| sed 's/_polypolish//' > ${isolate_id}_medaka_polypolish1.fasta
-        contig_renaming.py ${flye_assembly} ${isolate_id}_medaka_polypolish1.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish2.fasta
-        seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish2.fasta > ${isolate_id}_medaka_polypolish.fasta
-        rm *sam
-        """
-}
-
-process POLCA {
-        conda "${params.polca_env}"
-        publishDir path:("${params.outdir}"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka_polypolish_polca.fasta"}, pattern: '*polca.fasta'        
-
-
-        input:
-        tuple val(isolate_id), path(polypolish_polished_assembly), path(illumina1), path(illumina2), path(flye_assembly), path(gfa_file)
-        output:
-        tuple val(isolate_id), path("${isolate_id}_medaka_polypolish_polca.fasta")
-
-        script:
-        """
-        polca.sh -a ${polypolish_polished_assembly} -r '${illumina1} ${illumina2}' -t 16 -m 4G
-        mv ${isolate_id}_medaka_polypolish.fasta.PolcaCorrected.fa ${isolate_id}_medaka_polypolish_polca_intermediate.fasta
-        seqkit sort --by-length --reverse ${isolate_id}_medaka_polypolish_polca_intermediate.fasta > ${isolate_id}_medaka_polypolish_polca.fasta
-        contig_renaming.py ${flye_assembly} ${isolate_id}_medaka_polypolish_polca.fasta ${isolate_id}_inter.fasta ${isolate_id}_medaka_polypolish_polca.fasta
-
-        """
-}
-
-
-workflow {
-  if ( run_filtlong ) {
-    filtered_ch=FILTER(reads_se)
+workflow qc_and_assemble {
+  take:
+  reads_se
+  main:
+  if( filter_reads ) {
+    input_ch=FILTER(reads_se)
   }
   else {
-    filtered_ch=(reads_se)
+    input_ch=reads_se
   }
-  assembled_ch=ASSEMBLE(filtered_ch)
-  if ( run_medaka ) {
-    flye_filtered_ch=assembled_ch
-    .combine(filtered_ch,by:0)
-    .view()
-    medaka_polished_ch=MEDAKA(flye_filtered_ch)
+  if( read_qc && filter_reads ) {
+    raw_stats_ch=RAW_ONT_STATS(reads_se)
+    COMBINE_RAW_ONT_STATS(raw_stats_ch.collect())
+    filtered_stats_ch=FILTERED_ONT_STATS(input_ch)
+    COMBINE_FILTERED_ONT_STATS(filtered_stats_ch.collect())
+  }
+  else if( read_qc ) {
+    raw_stats_ch=RAW_ONT_STATS(reads_se)
+    COMBINE_RAW_ONT_STATS(raw_stats_ch.collect())
+  }
+  assembled_ch=ASSEMBLE(input_ch)
+  emit:
+  assembly_ch=ASSEMBLE.out.assembly_fasta
+  reads_ch=input_ch
+}
+
+workflow long_read_polishing {
+  take:
+  assembly_ch
+  reads_ch
+  main:
+  assembly_reads_ch=assembly_ch
+  .combine(reads_ch, by:0)
+  medaka_polished_ch=MEDAKA(assembly_reads_ch)
+  if( polishing_stats ) {
+    polishing_stats_ch=POLISHING_STATS(assembly_ch,MEDAKA.out.assembly_fasta,'medaka')
+    combined=COMBINE_POLISHING_STATS(polishing_stats_ch.collect(),'medaka')
+  }
+  else {
+    combined=medaka_polished_ch
+  }
+  emit:
+  assembly_ch=medaka_polished_ch.assembly_fasta
+  medaka_stats_ch=combined
+}
+
+workflow short_read_polishing {
+  take:
+  reads_pe
+  latest_assembly_ch
+  flye_ch
+  main:
+  if( read_qc ) {
+    fastqc_ch = ILLUMINA_STATS(reads_pe)
+    COMBINE_ILLUMINA_STATS(fastqc_ch.collect())
+  }
+  assembly_reads_ch=latest_assembly_ch
+  .combine(reads_pe, by: 0)
+  polypolish_input_ch=assembly_reads_ch
+  .combine(flye_ch,by:0)
+  polypolished_ch=POLYPOLISH(polypolish_input_ch)
+  if( polishing_stats ) {
+    polypolish_stats_ch=POLISHING_STATS(latest_assembly_ch,polypolished_ch,'polypolish')
+    polypolish_stats_combined=COMBINE_POLISHING_STATS(polypolish_stats_ch.collect(),'polypolish')
+  }
+  else {
+    polypolish_stats_combined=polypolished_ch
+  }
+  polypolish_assembly_reads_ch=polypolished_ch
+  .combine(reads_pe, by: 0)
+  polca_input_ch=polypolish_assembly_reads_ch
+  .combine(flye_ch,by:0)  
+  polca_ch=POLCA(polca_input_ch)
+  if( polishing_stats ) {
+    polca_stats_ch=POLCA_POLISHING_STATS(latest_assembly_ch,polca_ch,'polca')
+    polca_stats_combined=COMBINE_POLCA_POLISHING_STATS(polca_stats_ch.collect(),'polca')
+  }
+  else {
+    polca_stats_combined=polca_ch
+  }
+  emit:
+  assembly_ch=POLCA.out.assembly_fasta
+  polypolish_stats_combined_ch=polypolish_stats_combined
+  polca_stats_combined_ch=polca_stats_combined
+}
+
+workflow assembly_stats {
+  take:
+  assembly_ch
+  main:
+  stats_ch = ASSEMBLY_STATS(assembly_ch)
+  COMBINE_ASSEMBLY_STATS(stats_ch.collect())
+}
+
+workflow all_polishing_stats {
+  take:
+  medaka_stats_ch
+  polypolish_stats_combined_ch
+  polca_stats_combined_ch
+  main:
+  all1=medaka_stats_ch
+  .combine(polypolish_stats_combined_ch)
+  all_polishing_stats=all1
+  .combine(polca_stats_combined_ch)
+  COMBINE_ALL_POLISHING_STATS(all_polishing_stats)
+}
+
+workflow short_polishing_stats {
+  take:
+  polypolish_stats_combined_ch
+  polca_stats_combined_ch
+  main:
+  all_short_polish_stats=polypolish_stats_combined_ch
+  .combine(polca_stats_combined_ch)
+  COMBINE_ALL_POLISHING_STATS(all_short_polish_stats)
+}
+
+workflow long_polishing_stats {
+  take:
+  medaka_stats_ch
+  main:
+  COMBINE_ALL_POLISHING_STATS(medaka_stats_ch)
+}
+
+
+//////IMPLICIT
+workflow {
+  if (long_read_polish && short_read_polish && polishing_stats ) {
+    qc_and_assemble(reads_se)
+    long_read_polishing(qc_and_assemble.out)
+    short_read_polishing(reads_pe,long_read_polishing.out.assembly_ch,qc_and_assemble.out.assembly_ch)
+    assembly_stats(short_read_polishing.out.assembly_ch)
+    all_polishing_stats(long_read_polishing.out.medaka_stats_ch,short_read_polishing.out.polypolish_stats_combined_ch,short_read_polishing.out.polca_stats_combined_ch)
+
+  }
+  else if (long_read_polish && short_read_polish ) {
+    qc_and_assemble(reads_se)
+    long_read_polishing(qc_and_assemble.out)
+    short_read_polishing(reads_pe,long_read_polishing.out.assembly_ch,qc_and_assemble.out.assembly_ch)
+    assembly_stats(short_read_polishing.out.assembly_ch)
   }
 
-  if ( run_polypolish ) {
-    medaka_illumina_ch=medaka_polished_ch
-    .combine(reads_pe, by: 0)
-    medaka_illumina_assembled_ch=medaka_illumina_ch
-    .combine(assembled_ch, by:0)
-    .view()
-    polypolished_ch=POLYPOLISH(medaka_illumina_assembled_ch)
+  else if ( long_read_polish && polishing_stats ) {
+    qc_and_assemble(reads_se)
+    long_read_polishing(qc_and_assemble.out)
+    assembly_stats(long_read_polishing.out.assembly_ch)
+    long_polishing_stats(long_read_polishing.out.medaka_stats_ch)
   }
-  if ( run_polca ) {
-    polypolish_illumina_ch=polypolished_ch
-    .combine(reads_pe,by:0)
-    polypolish_illumina_assembled_ch=polypolish_illumina_ch
-    .combine(assembled_ch, by:0)
-    .view()
-    polca_polished_ch=POLCA(polypolish_illumina_assembled_ch)
+
+  else if ( short_read_polish && polishing_stats ) {
+    qc_and_assemble(reads_se)
+    short_read_polishing(reads_pe,qc_and_assemble.out.assembly_ch,qc_and_assemble.out.assembly_ch)
+    assembly_stats(short_read_polishing.out.assembly_ch)
+    short_polishing_stats(short_read_polishing.out.polypolish_stats_combined_ch,short_read_polishing.out.polca_stats_combined_ch)
+  }
+
+  else if ( short_read_polish ) {
+    qc_and_assemble(reads_se)
+    short_read_polishing(reads_pe,qc_and_assemble.out.assembly_ch,qc_and_assemble.out.assembly_ch)
+    assembly_stats(short_read_polishing.out.assembly_ch)
+  }
+
+  else if ( long_read_polish ) {
+    qc_and_assemble(reads_se)
+    long_read_polishing(qc_and_assemble.out)
+    assembly_stats(long_read_polishing.out.assembly_ch)
+  }
+  
+  else {
+    qc_and_assemble(reads_se)
+    assembly_stats(qc_and_assemble.out.assembly_ch)
   }
 }
+

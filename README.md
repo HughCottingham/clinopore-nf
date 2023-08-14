@@ -2,7 +2,7 @@
 
 An ONT-first bacterial isolate assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
 
-It takes a set of long reads and optional short reads and runs the following tools:
+It takes a set of long reads and optional short reads and runs the following tools (all steps optional):
 
 - filtlong (pre-assembly filtering) (https://github.com/rrwick/Filtlong)
 - flye (assembly) (https://github.com/fenderglass/Flye)
@@ -44,21 +44,21 @@ There are several other options that can be set by modifying `nextflow.config`. 
 
 | Option                            | Description                                                       | Default           |
 | ----                              | ----                                                              | ----              |
-| `reads`                | Glob pattern matching input reads             | 'reads/*fastq.gz'
-| `outdir`                        | Output directory                                                   | 'assemblies'   |
-| `run_filtlong`                   | Optional read filtering step ('true' or 'false')     | 'true'                 |
-| `run_medaka`               | Optional long-read polishing step ('true' or 'false')     | 'true'                |
-| `run_polypolish`               | Optional short-read polishing step ('true' or 'false')     | 'true'                |
-| `run_polca`              |Optional short-read polishing step ('true' or 'false')     | 'true'               |
-| `polca_env`                    | polca conda environment (MUST set)     | '/path/to/polca/env'                | 
 | `clinopore_env`           | clinopore conda environment (MUST set)     | '/path/to/clinopore/env'                 |
+| `polca_env`           | polca conda environment (MUST set)     | '/path/to/polca/env'                 |
+| `reads`                | Glob pattern matching input reads             | 'reads/*fastq.gz'
+| `medaka_model`              | Medaka model (see medaka github documentation for details)   | 'r941_min_sup_g507'                |
+| `filter_reads`                   | Optional read filtering step ('true' or 'false')     | 'true'                 |
+| `long_read_polish`               | Optional long-read polishing step ('true' or 'false')     | 'true'                |
+| `short_read_polish`               | Optional short-read polishing step ('true' or 'false')     | 'true'                |
+| `outdir`                        | Output directory                                                   | 'assemblies'   |
+| `read_qc`              | Optional read QC (Nanostats and fastqc) ('true' or 'false')     | 'true'                |
+| `polishing_stats`              | Optional summary of bases added/subtracted at each polishing step ('true' or 'false')     | 'true'                |
+| `failure_action`              | Option to ignore ('ignore') or terminate ('terminate') on errors (local execution only)     | 'terminate'                |
+| `threads`           | Number of threads to use (local execution only)      | 16                |
 | `max_retries`              | MASSIVE use only - How many times should slurm retry the job with higher CPUs, RAM and/or walltime?   | 3                |
 | `queue_size`                    | MASSIVE use only - Maximum number of jobs to submit at once                         | 1000                 |
-| `processors`           | Number of processors to use      | 4                |
 | `slurm_account`              | MASSIVE use only (MUST set if running on MASSIVE)   | 'slurm_account'                |
-| `medaka_model`              | Medaka model (see medaka github documentation for details)   | 'r941_min_sup_g507'                |
-| `failure_action`              | Determine whether pipeline should terminate or ignore failed processes ('terminate' or 'ignore')   | 'terminate'                |
-
 
 ## Output
 
