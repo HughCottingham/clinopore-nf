@@ -1,4 +1,4 @@
-name: polca
+name: /pvol/conda_envs/polca
 channels:
   - bioconda
   - conda-forge
@@ -6,12 +6,12 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1
   - _openmp_mutex=4.5
-  - biopython=1.79
+  - biopython=1.81
   - boost=1.74.0
   - boost-cpp=1.74.0
   - bwa=0.7.17
   - bzip2=1.0.8
-  - ca-certificates=2022.9.24
+  - ca-certificates=2023.7.22
   - grep=3.4
   - icu=68.2
   - ld_impl_linux-64=2.36.1
@@ -30,7 +30,7 @@ dependencies:
   - masurca=3.4.2
   - ncurses=6.2
   - numpy=1.21.3
-  - openssl=3.0.5
+  - openssl=3.1.2
   - pcre=8.45
   - perl=5.26.2
   - pip=21.3.1
@@ -46,3 +46,4 @@ dependencies:
   - xz=5.2.5
   - zlib=1.2.11
   - zstd=1.5.0
+prefix: /pvol/conda_envs/polca
