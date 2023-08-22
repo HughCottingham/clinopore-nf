@@ -26,17 +26,15 @@ with open(old_fasta,'r') as old,open(inter_fasta1,'r') as inter1,open(inter_fast
 			inter2.write(line)
 		else:
 			line=line.strip()
-			#line=line+" "
+			line=line+" "
 			#print(line)
 			for val in old_headers:
 				print(val)
 				print(line)
 				if line in val:
-					print('HELLYEAH')
 					val=re.sub('length=(.*)','',val)
 					inter2.write(val)
 				else:
-					print('na man')
 with open(inter_fasta2,'r') as inter2,open(final_fasta,'w') as final:
 	from Bio import SeqIO
 	for record in SeqIO.parse(inter2, "fasta"):
