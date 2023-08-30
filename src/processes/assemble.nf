@@ -36,7 +36,7 @@ process ASSEMBLE {
 }
 
 process MEDAKA {
-        label "short_job"
+        label "medium_job"
         conda "${params.clinopore_env}"
         publishDir path:("${params.outdir}/medaka"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka.fasta"}, pattern: '*fasta'
         publishDir path:("${params.outdir}/stats"), mode: 'copy', saveAs: {filename -> "${isolate_id}_medaka_polishing_stats.txt"}, pattern: '*stats.txt'
