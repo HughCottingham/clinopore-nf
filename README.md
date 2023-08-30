@@ -57,7 +57,7 @@ There are several other options that can be set by modifying `nextflow.config`. 
 | `failure_action`              | Option to ignore ('ignore') or terminate ('terminate') on errors (local execution only)     | 'terminate'                |
 | `threads`           | Number of threads to use (local execution only)      | 16                |
 | `max_retries`              | MASSIVE use only - How many times should slurm retry the job with higher CPUs, RAM and/or walltime?   | 3                |
-| `queue_size`                    | MASSIVE use only - Maximum number of jobs to submit at once                         | 1000                 |
+| `queue_size`                    | MASSIVE use only - Maximum number of jobs to submit at once                         | 50                 |
 | `slurm_account`              | MASSIVE use only (MUST set if running on MASSIVE)   | 'slurm_account'                |
 
 ## Output
