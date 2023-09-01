@@ -57,7 +57,7 @@ process MEDAKA {
 }
 
 process POLYPOLISH {
-        label "short_job"
+        label "medium_job"
         conda "${params.clinopore_env}"
         publishDir path:("${params.outdir}/polypolish"), mode: 'copy', saveAs: {filename -> "${isolate_id}_polypolish.fasta"}, pattern: '*polypolish.fasta'        
 
@@ -82,7 +82,7 @@ process POLYPOLISH {
 }
 
 process POLCA {
-        label "short_job"
+        label "medium_job"
         conda "${params.polca_env}"
         publishDir path:("${params.outdir}"), mode: 'copy', saveAs: {filename -> "${isolate_id}_polca.fasta"}, pattern: '*polca.fasta'        
 
