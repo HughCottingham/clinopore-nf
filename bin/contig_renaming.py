@@ -34,7 +34,6 @@ with open(old_fasta,'r') as old,open(inter_fasta1,'r') as inter1,open(inter_fast
 				if line in val:
 					val=re.sub('length=(.*)','',val)
 					inter2.write(val)
-				else:
 with open(inter_fasta2,'r') as inter2,open(final_fasta,'w') as final:
 	from Bio import SeqIO
 	for record in SeqIO.parse(inter2, "fasta"):
