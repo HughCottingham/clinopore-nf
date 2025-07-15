@@ -1,5 +1,7 @@
 # clinopore-nf
 
+## Overview
+
 An ONT-first bacterial isolate assembly pipeline using the best combination of **fully automated** tools according to the Trycycler(1) and Polypolish papers(2). Can be used with long reads alone or with optional short reads for polishing.
 
 It takes a set of long reads and optional short reads and runs the following tools (all steps optional):
@@ -9,6 +11,10 @@ It takes a set of long reads and optional short reads and runs the following too
 - medaka (long-read polishing) (https://github.com/nanoporetech/medaka)
 - polypolish (short-read polishing) (https://github.com/rrwick/Polypolish)
 - polca (short-read polishing) (https://github.com/alekseyzimin/masurca)
+
+## System Requirements
+
+This pipeline was written for use in Linux operating systems and requires mamba/conda for installation. It has been tested on Ubuntu 18.04.5 and Rocky Linux 9.4 (Blue Onyx). Installation with mamba typically takes 4-5 minutes. Hybrid assembly of the demo readsets available on this repository took 16 minutes on a Ubuntu 18.04.5 system using 8 CPUs and 16GB of RAM.
 
 ## Quickstart
 
