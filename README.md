@@ -14,7 +14,7 @@ It takes a set of long reads and optional short reads and runs the following too
 
 ## System Requirements
 
-This pipeline was written for use in Linux operating systems and requires mamba/conda for installation. It has been tested on Ubuntu 18.04.5 and Rocky Linux 9.4 (Blue Onyx). Installation with mamba typically takes 4-5 minutes. Hybrid assembly of the demo readsets available on this repository took 16 minutes on a Ubuntu 18.04.5 system using 8 CPUs and 16GB of RAM.
+This pipeline was written for use in Linux operating systems and requires mamba/conda for installation. It has been tested on Ubuntu 18.04.5 and Rocky Linux 9.4 (Blue Onyx). Installation with mamba typically takes 4-5 minutes. Hybrid assembly of the demo readsets available at SRA accessions SRR13501341 (Illumina) and SRR34436406 (ONT) took 16 minutes on a Ubuntu 18.04.5 system using 8 CPUs and 16GB of RAM.
 
 ## Quickstart
 
